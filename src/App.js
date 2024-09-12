@@ -67,7 +67,7 @@ function App() {
       <Routes>
         <Route path='/register' element={<Register />}></Route>
         <Route path="/login" element={<ProfilePage />} />
-        <Route path="/chat" element={<ConversationPage />} />
+        <Route path="/chat/:userId"  element={<ConversationPage />} />
         <Route path='/' element={
           <ProtectedRoute>
             <Navbar activeButton={activeButton} setActiveButton={setActiveButton} />

@@ -1,62 +1,34 @@
-import React, { useState, useEffect } from "react";
-import ConversationItem from "./ConversationItem";
+import React, { useState } from "react";
 
-const ConversationList = ({ userId, searchTerm }) => {
-  const [conversations, setConversations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ConversationSearch = ({ onSearch }) => {
+  const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetch(`/api/conversations/${userId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setConversations(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch conversations:", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [userId]);
-
-  // Filter conversations based on the search term
-  const filteredConversations = conversations.filter((conversation) =>
-    conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  if (loading) {
-    return <div>Loading conversations...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const handleInputChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term); // Update local state
+    onSearch(term); // Call the handler to update the conversation list
+  };
 
   return (
-    <div className="conversation-list">
-      {filteredConversations.length > 0 ? (
-        filteredConversations.map((conversation) => (
-          <ConversationItem
-            key={conversation.id}
-            name={conversation.name}
-            avatar={conversation.avatar}
-            newMessages={conversation.newMessages}
-            time={conversation.time}
-            userId={conversation.userId}
-            senderId={conversation.senderId}
-          />
-        ))
-      ) : (
-        <div>No conversations found</div>
-      )}
+    <div className="flex flex-col justify-center p-2.5 w-full font-medium text-gray-600 text-sm md:text-base lg:text-lg">
+      <div className="flex overflow-hidden gap-2 items-center px-4 py-4 w-full bg-white rounded-full border border-solid border-zinc-300 min-h-[49px] shadow-md">
+        <input
+          type="text"
+          placeholder="Search conversations"
+          className="flex-1 shrink self-stretch my-auto basis-0 opacity-50 bg-transparent border-none outline-none md:w-3/4 lg:w-2/3"
+          aria-label="Search conversations"
+          value={searchTerm}
+          onChange={handleInputChange} // Capture input change
+        />
+        <img
+          loading="lazy"
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/e7a50921e635a0f570172a7327c6a9ade56e66c315a5ecbd3cd4bbc1a5e87b31?placeholderIfAbsent=true&apiKey=be7bb19bd9a34f629f0b93471561a4e2"
+          alt="Search icon"
+          className="object-contain shrink-0 self-stretch my-auto w-4 md:w-6 lg:w-8 aspect-square"
+        />
+      </div>
     </div>
   );
 };
 
-export default ConversationList;
+export default ConversationSearch;

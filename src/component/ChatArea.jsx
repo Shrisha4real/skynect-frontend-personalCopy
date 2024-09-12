@@ -1,54 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import MessageList from './MessageList';
-import MessageInput from './MessageInput';
+import React from "react";
 
-const ChatArea = () => {
-  const { userId, senderId } = useParams(); // Get conversation details from URL params
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Fetch messages for the selected conversation
-    fetch(`/api/messages/${userId}/${senderId}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch messages');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setMessages(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, [userId, senderId]); // Fetch messages when userId or senderId changes
-
-  if (loading) {
-    return <div>Loading messages...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
+const ChatArea = ({ messages }) => {
   return (
-    <main className="relative flex flex-col ml-5 w-[46%] h-screen max-md:ml-0 max-md:w-full">
-      <div className="flex flex-col w-full  h-full">
-        {/* Message list is scrollable and takes full width */}
-        <div className="flex-grow overflow-y-auto bg-neutral-100 bg-opacity-70 ">
-          <MessageList messages={messages} />
-        </div>
-        {/* Message input is fixed at the bottom */}
-        <div className="sticky bottom-0 w-full bg-zinc-100 border-t border-gray-300">
-          <MessageInput userId={userId} senderId={senderId} />
-        </div>
-      </div>
-    </main>
+    <div className="chat-area flex-grow h-full overflow-y-auto p-4">
+      {messages.length > 0 ? (
+        messages.map((message, index) => (
+          <div key={index} className={`message-item ${message.from === "8f632292-fc6d-4504-af72-88f585fa7522" ? 'text-right' : 'text-left'}`}>
+            <div className="inline-block p-2 my-1 bg-gray-200 rounded-lg">
+              {message.content}
+            </div>
+          </div>
+        ))
+      ) : (
+        <div>No messages</div>
+      )}
+    </div>
   );
 };
 
