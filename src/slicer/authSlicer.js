@@ -11,7 +11,8 @@ const initialState = {
 };
 
 
-const baseUrl = process.env.REACT_APP_API_URL 
+const baseUrl = "http://localhost:3020/api/v1/users"
+// process.env.REACT_APP_API_URL 
 
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -136,6 +137,8 @@ const authSlice = createSlice({
       .addCase(CheckUser.rejected, (state, action) => {
         state.status = 'failed';
         state.isLoggedIn = false;
+        // state.status = 'succeeded';
+        // state.isLoggedIn = true;
       })
   }
 });
